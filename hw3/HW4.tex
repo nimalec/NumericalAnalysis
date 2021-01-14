@@ -1,0 +1,93 @@
+\documentclass{article} 
+\usepackage[letterpaper, margin=1in]{geometry} 
+\usepackage{listings}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\graphicspath{ Users/nimalec/Documents/SPRING 2018 COURSES-CORNELL/CS 4220/PSETS} 
+\lstset{frame=tb,
+  language= Matlab,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray}
+  keywordstyle=\color{blue},
+  breaklines=true,
+  breakatwhitespace=true, 
+  tabsize=3
+}
+
+
+\begin{document} 
+\title{\bf{Homework 4}}
+
+\author{Nima Leclerc\\Cornell University\\CS 4220 \\ Numerical Analysis: Linear and Nonlinear Problems}
+\date{April 17, 2018}
+\maketitle
+\newpage   
+\subsection*{Question 1:}
+The algorithm used for Newton's and the Secant methods  in these evaluations are implemented below in MATLAB. 
+\begin{lstlisting}
+%%%%NEWTONITERATION.m: performs Newton Iteration for Root Finding on a function, f(x). 
+%%%% INPUT: f (function in terms of x), x0 (initial guess for Newton Iteration),  maxIter (upper bound of steps in iterative routine). 
+%%% OUTPUT: xroot (approximate root obtained for function, f(x)) 
+function [xroot] =NEWTONITERATION(f,x0, maxIter) 
+g=@(x) f;  % Define the function
+dfx =@diff(f(x));      % Define the first derivative of the function
+y=zeros(maxIter); 
+i = 1;
+x(i)=x0; 
+while i < maxIter && abs(f(x(i))) > 1e-16  
+   x(i+1) = x(i) - f(x(i))/dfx(x(i));
+   xroot=x(i+1); 
+   y(i)=x(i); 
+   i = i + 1;
+end 
+end 
+\end{lstlisting}
+\begin{lstlisting}
+%%%%SECANTMETHOD.m: performs Newton Iteration on a function, f(x) 
+%%%% INPUT: f (function in terms of x), x0 (initial guess for Newton Iteration),  maxIter (upper bound of steps in iterative routine). 
+%%% OUTPUT: xroot (approximate root obtained for function, f(x)) 
+function [y] =SECANTMETHOD(f,x0, maxIter) 
+g=@(x) f;  % Define the function
+i = 2;
+x(i)=x0; 
+while i < maxIter && abs(f(x(i))) > 1e-16  
+   x(i+1) = x(i) - f(x(i))*(x(i)-x(i-1))/(f(x(i))-f(x(i-1)));
+   xroot=x(i+1); 
+   y(i)=x(i); 
+   i = i + 1;
+end
+end 
+\end{lstlisting}
+(a) Here we consider the function $f(x) =x^{2}$. 
+The routines above were implemented for this particular function using a threshold of  1e-16, initial guess x0=0.2, tolerance of 1e-16,  and 30 iterations. For this function, one would expect the root to be $x^{\star} =0$ as suggested by Figure 1.  When implemented, the value  $x^{\star}$  was approximated to 9.79e-9  with Newton's method and 0 with the Secant method. These results indicate good approximations with these methods. The convergence of these  are plotted in Figure 2  The convergence of each are in agreement with what is expected. The trend tends to converge linearly, which is what is expected for this particular algorithm. 
+\newline \newline 
+(b) Here, the same is performed as in (a). However, instead the function $f(x) = \sin x + x^{3}$ is considered. The routines above were implemented for this particular function using a threshold of  1e-16, initial guess x0=0.2, tolerance of 1e-16, and 30 iterations . For this function, one would expect the root to be $x^{\star} =0$ as suggested by Figure 4. When implemented, the value $x^{\star}$  was approximated to 2e-17 with Newton's method and 0 with the Secant method. These results indicate good approximations with these methods.  The convergence of these are plotted in Figure 4.  The convergence of each are in agreement with what is expected, for it shows quadratic behavior. 
+\newline \newline 
+
+
+(c) Here, the same is performed as in (a). However, instead the function $f(x) = \sin 1/x$   is considered. The routines above were implemented for this particular function using a threshold of  1e-16, initial guess x0=0.3, tol=1.e-16, and 30 iterations . For this function, one would expect the root to be $x^{\star} =0$ as suggested by Figure 4. When implemented, the value $x^{\star}$  was approximated to 0.315 with Newton's method and 0.3062 with the Secant method. These results indicate good approximations with these methods, as shown in the plot of $sin(1/x)$ in Figure 5.  The convergence of this is plotted in Figure 6.  The convergence of each are in agreement with what is expected, as it is linear. 
+\newline \newline 
+
+
+\subsection*{Question 2:}
+Here, one seeks the rate of convergence in solving for a root of the function $f(x) =x^{p}$ by employing Newton's method. This can be sought after in the following manner. Each iteration of the algorithm can be written as  follows, 
+$$ x_{k+1} = x_{k} - f(x_{k})/ f^{\prime}(x_{k}) $$ 
+$$ =   x_{k} - x_{k}^{p} / ( px_{k}^{p-1}) $$
+$$ =  x_{k} -  x_{k}/p = x_{k} (1-p^{-1}) $$
+Now, the expression $x_{k+1} =x_{k} (1-p^{-1}) $  which can be used to determine the rate of convergence for this algorithm. Generally, one can state the following for convergence rate
+$$ ||x_{k+1} - x^{\star} || \leq \rho ||x_{k+1} - x^{\star} ||$$ 
+For some convergence rate $ \rho $ and known root $x^{\star}$. Then, the following is obtained for what we know about each iterate 
+$$  ||x_{k} (1-p^{-1})  - x^{\star} || \leq \rho ||x_{k} - x^{\star} ||$$ 
+However, we know that $ x^{\star}=0$ for this function. Then, $$  ||x_{k} (1-p^{-1})  || \leq \rho ||x_{k}||$$ . As $k \rightarrow \infty$,  one can take the following limit 
+$$\rho = \lim_{k \rightarrow \infty} \frac{|x_{k} (1-p^{-1}) |}{|x_{k}|} =  \lim_{k \rightarrow \infty}  (1-p^{-1})  =  (1-p^{-1}) $$  
+Hence, one can claim that solution to this problem does converge with this method since the limit evaluated above is finite. Moreover, the expression above is the rate of convergence for this function. Rate of convergence: $\rho = (1-p^{-1})$. 
+
+
+
+\end{document}

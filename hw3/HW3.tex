@@ -1,0 +1,203 @@
+\documentclass{article} 
+\usepackage[letterpaper, margin=1in]{geometry} 
+\usepackage{listings}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\graphicspath{ Users/nimalec/Documents/SPRING 2018 COURSES-CORNELL/CS 4220/PSETS} 
+\lstset{frame=tb,
+  language= Matlab,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray}
+  keywordstyle=\color{blue},
+  breaklines=true,
+  breakatwhitespace=true, 
+  tabsize=3
+}
+
+
+\begin{document} 
+\title{\bf{Homework 3}}
+
+\author{Nima Leclerc\\Cornell University\\CS 4220 \\ Numerical Analysis: Linear and Nonlinear Problems}
+\date{March 30, 2018}
+\maketitle
+\newpage   
+\subsection*{Question 1:Assume that we are given A  } 
+(a) Here one seeks to show that given an a matrix $A \in R^{n \times n}$  with an initial guess of an eigenvector $v^{(0}$ such that $v^{(0)T}v_{1} \neq 0$  and 
+$v^{(0)T}v_{2} \neq 0$ simultaneously, it can be shown that  $v^(0) \in span \{  v_{1}, v_{2} \} $.  \newline 
+Here, one can define $v^{(0)} =\sum_{i=1}^{n}\alpha_{i}v_{i}$  and the $k$th iterate of $v$ as  
+$$v^{(k)} =c_{k}A^{k}\sum_{i=1}^{n}\alpha_{i}v_{i}   = c_{k}\lambda_{1}^{k}\sum_{i=1}^{n}\alpha_{i}(\frac{\lambda_{i}}{\lambda_{1}})^{k} v_{i}  =  $$ 
+The above can now be written as, 
+$$v^{(k)} = c_{k}\lambda_{1}^{k}(\alpha_{1}(\frac{\lambda_{1}}{\lambda_{1}})^{k} v_{1} +   \alpha_{2}(\frac{\lambda_{2}}{\lambda_{1}})^{k} v_{2} +  \sum_{i=3}^{n}\alpha_{i}(\frac{\lambda_{i}}{\lambda_{1}})^{k} v_{i} ) $$ 
+
+$$ =  c_{k}\lambda_{1}^{k}(\alpha_{1}(\frac{\lambda_{1}}{\lambda_{1}})^{k} v_{1} +   \alpha_{2}(\frac{\lambda_{1}}{\lambda_{1}})^{k} v_{2} +  \sum_{i=3}^{n}\alpha_{i}(\frac{\lambda_{i}}{\lambda_{1}})^{k} v_{i} )=  c_{k}\lambda_{1}^{k}(\alpha_{1}(1)^{k} v_{1} +   \alpha_{2}(1)^{k} v_{2} +  \sum_{i=3}^{n}\alpha_{i}(\frac{\lambda_{i}}{\lambda_{1}})^{k} v_{i} )= 
+$$  
+From the nature of this method, it is known that the higher order terms in this expansion ($i>3$) approach 0, since we have $\lambda_{1}$ as the dominant eigenvalue in the denominator. Hence the above expression reduces to the following, 
+$$v^{(k)}= c_{k}\lambda_{1}^{k}(\alpha_{1} v_{1} +   \alpha_{2} v_{2} ) =\gamma_{1,k}(\alpha_{1} v_{1} +   \alpha_{2} v_{2} )   = \beta_{1} v_{1} +   \beta_{2} v_{2} $$
+Hence, the above explicitly indicates that the iterate $ v^{(k)}$ can be written as a linear combination  $ v_{1} $ and $ v_{2}$ which suggests that $ v^{(k)}$ lies in the span of   $ v_{1} $ and $ v_{2}$ . 
+\newline 
+\newline 
+(b) \newline 
+\newline 
+In proving this convergence, one can simplify as follows 
+$$ ||[v^{(k)}]^{T} [v_{1} v_{2}]||^{2}  = \frac{c_{1}^{2}  \lambda_{1}^{2k}  +  c_{2}^{2}  \lambda_{2}^{2k} }{\sum_{i=1}^{n}   c_{i}^{2}  \lambda_{i}^{2k}} =
+ \frac{   \lambda_{1}^{2k} (c_{1}^{2} +  c_{2}^{2} ) }{ \lambda_{1}^{2k}(  c_{1}^{2} +  c_{2}^{2}   + O (| \frac{\lambda_{3}}{  \lambda_{2}}|^{2k}}) =  
+ \frac{\beta }{ \beta  + O (| \frac{\lambda_{3}}{\lambda_{1}})|^{2k}}  \sim  \frac{1 }{ 1  + O (| \frac{\lambda_{3}}{\lambda_{1}})|^{2k}}= 
+ 1-   O (| \frac{\lambda_{3}}{\lambda_{1}})|^{2k}  
+ $$ 
+Hence, 
+$$ ||1-[v^{(k)}]^{T} [v_{1} v_{2}]||  = O (| \frac{\lambda_{3}}{\lambda_{1}})|^{2k}  $$  This is the rate of convergence. 
+(c) Here, one considers the case finding the eigenvalues of $A$ using Rayleigh Quotient iteration. Considering the case where $\lambda_{1}$ and  $\lambda_{2}$ are unique one can achieve the following (considering the two dominant eigenvectors). 
+\newline  
+$$\lambda_{k} = \frac{v^{(k)T}A v^{(k)}}{v^{(k)T} v^{(k)}} = \frac{(\beta_{1} v_{1} +   \beta_{2} v_{2})^{T}A (\beta_{1} v_{1} +   \beta_{2} v_{2})}{(\beta_{1} v_{1} +   \beta_{2} v_{2})^{T} (\beta_{1} v_{1} +   \beta_{2} v_{2})}$$ 
+
+$$\lambda_{k} = \frac{v^{(k)T}A v^{(k)}}{v^{(k)T} v^{(k)}} = \frac{(\beta_{1} v_{1} +   \beta_{2} v_{2})^{T} (\beta_{1}A v_{1} +   \beta_{2} Av_{2})}{(\beta_{1} v_{1} +   \beta_{2} v_{2})^{T} (\beta_{1} v_{1} +   \beta_{2} v_{2})} =  \frac{(\beta_{1} v_{1} +   \beta_{2} v_{2})^{T} (\beta_{1}\lambda_{1} v_{1} +   \beta_{2} \lambda_{2}v_{2})}{(\beta_{1} v_{1} +   \beta_{2} v_{2})^{T} (\beta_{1} v_{1} +   \beta_{2} v_{2})}
+$$ 
+ $$ = \frac{\beta_{1}^{2}\lambda_{1} v_{1}^{T}v_{1} + \beta_{2}^{2}\lambda_{2} v_{2}^{T}v_{2} + \beta_{1} \beta_{2}   \lambda_{1} v_{2}^{T} v_{1} v_{1}+ \beta_{1} \beta_{2}   \lambda_{2} v_{1}^{T} v_{2} }{ \beta_{1}^{2} v_{1}^{T}v_{1} + \beta_{2}^{2}v_{2}^{T}v_{2} + \beta_{1} \beta_{2}    v_{2}^{T} v_{1} + \beta_{1} \beta_{2}   v_{1}^{T} v_{2}}
+$$ 
+Since $v_{1}$ and $v_{2}$ are orthonormal to one another, the above reduces to the following 
+$$ = \frac{\beta_{1}^{2}\lambda_{1} + \beta_{2}^{2}\lambda_{2}   }{ \beta_{1}^{2} + \beta_{2}^{2}}
+$$ 
+ It is clear that convergence is not achieved in this case, when $\lambda_{1}$ and $\lambda_{2}$ differ. Hence, for this general case convergence cannot be achieved via Rayleigh iteration. However, one can take the case where $\lambda_{1} = \lambda_{2}$. In this case, the above expression reduces to the following 
+ $$  \frac{\beta_{1}^{2}\lambda_{1} + \beta_{2}^{2}\lambda_{1}   }{ \beta_{1}^{2} + \beta_{2}^{2}} =   \frac{\lambda_{1}(\beta_{1}^{2}+ \beta_{2}^{2} )  }{ \beta_{1}^{2} + \beta_{2}^{2}} = \lambda_{1} 
+$$ 
+ This suggests that convergence is possible in when $v_{1}$ and $v_{2}$ share the same dominant eigenvalue. 
+ \newline   \newline
+ 2.) 
+ \newline 
+ \newline 
+ Here, one considers applying the QR algorithm to seek the eigenvalues of the following matrix, 
+ $$ A =
+  \begin{bmatrix} 
+  0& 1 \\ 
+  1 &0 
+  \end{bmatrix}$$ 
+  The QR algorithm was implemented and the code is shown below, 
+  \begin{lstlisting} 
+  %%QR_EIG, QR Eigenvalue Solver 
+%%In: n x n matrix A 
+%%Out: n x n matrix A1, with eigenvalues along the matrix diagonal 
+function [A1]=QR_EIG(A)  
+maxiter=1000;  %%Maximum number of iterations 
+for i=1:maxiter 
+    [q,r]=qr(A); 
+    A=r*q; 
+end 
+  A1= A; 
+   end
+ \end{lstlisting} 
+  The output of the code applied to matrix $A$ yields the following matrix, 
+  $$ A1 =
+  \begin{bmatrix} 
+  0& 1 \\ 
+  1 &0 
+  \end{bmatrix}$$ 
+  This upper Hessenberg matrix applied with the QR algorithm retrieves the same matrix with 0 along the diagonal. This suggests that this method fails to find the eigenvalues of this type of matrix. Hence, one must seek a different algorithm. Using a shift of $A_{n,n}^{(k)}$ cannot be applied here to yield better results since such a shift is a 0 shift (diagonal elements are 0). The algorithm used for this is implemented below, 
+\newline 
+\begin{lstlisting} 
+%%QR_EIG, SHIFTED QR Eigenvalue Solver 
+%%In: n x n matrix A, shift mu  
+%%Out: n x n matrix A1, with eigenvalues along the matrix diagonal 
+function [A1]=QRSHIFT_EIG(A0,mu)  
+maxiter=1000;  %%Maximum number of iterations 
+n=size(A0); 
+for i=1:maxiter 
+    [q,r]=qr(A0-mu*eye(n)); 
+    A0=r*q+mu*eye(n); 
+end 
+  A1= A0; 
+   end
+\end{lstlisting} 
+
+
+3.) \newline 
+Here, one hopes to show the similarity of the iterates $A^{(k)}$  to its successive iterate in the shifted QR Algorithm. This is achieved in the following way. One defines the $A^{(k)}$  iterate in QR as follows, assuming a shift of $\mu^{(k)}$, 
+$$ A^{(k)} - \mu^{(k)}I = Q^{(k)}R^{(k)}$$ 
+Similarly for the $k+1$th iterate, 
+$$ R^{(k)}Q^{(k)} =   A^{(k+1)} -  \mu^{(k)}I $$ 
+Hence, 
+$$  R^{(k)} =  (A^{(k+1)} -  \mu^{(k)}I)Q^{(k)T} $$ 
+Then  substituting this into the previous expression, 
+$$ A^{(k)} - \mu^{(k)}I=   Q^{(k)}( A^{(k+1)} -  \mu^{(k)}I)Q^{(k)T}$$ 
+$$ =Q^{(k)}A^{(k+1)}Q^{(k)T} - Q^{(k)} \mu^{(k)}IQ^{(k)T} = Q^{(k)}A^{(k+1)}Q^{(k)T} -\mu^{(k)}I  
+$$ 
+This results in the following, 
+$$ A^{(k)} - \mu^{(k)}I =  Q^{(k)}A^{(k+1)}Q^{(k)T} -\mu^{(k)}I  $$ 
+$$A^{(k)} = Q^{(k)}A^{(k+1)}Q^{(k)T} = Q^{(k)}A^{(k+1)}Q^{(k)-1} = 
+$$ 
+The above expression defines the similarity of $A^{(k+1)}$ to $A^{(k)}$  Q.E.D. 
+\newline \newline 
+4.) \newline  
+The codes for the QR, Rayleigh Iteration, and Shifted Inverse eigenvalue solvers are as follows 
+  \begin{lstlisting} 
+  %%QR_EIG, QR Eigenvalue Solver 
+%%In: n x n matrix A 
+%%Out: n x n matrix A1, with eigenvalues along the matrix diagonal 
+function [A1]=QR_EIG(A)  
+maxiter=1000;  %%Maximum number of iterations 
+for i=1:maxiter 
+    [q,r]=qr(A); 
+    A=r*q; 
+end 
+  A1= A; 
+   end
+ \end{lstlisting} 
+\begin{lstlisting} 
+%%RAYLEIGH_EIG, Eigenvalue Solver 
+%%In: n x n matrix A, initial eigenvector guess v0  
+%%Out: Dominant eigenvalue of A, lam 
+function [lam]=RAYLEIGH_EIG(A,v0)  
+maxiter=1000;  %%Maximum number of iterations 
+for i=1:maxiter 
+    n=size(A); 
+    lam=(v0')*A*v0; 
+    B=A-lam*eye(n); 
+    v=B\v0; 
+    v0=v/norm(v); 
+    lam= (v0')*A*v0; 
+end 
+   end
+\end{lstlisting} 
+\begin{lstlisting} 
+%%SHIFTINV_EIG, QR Eigenvalue Solver 
+%%In: n x n matrix A, shift alph,initial eigenvector guess v0 
+%%Out: Dominant eigenvalue of A, lam  
+function [lam]=SHIFTINV_EIG(A,v0,alph)  
+maxiter=1000;  %%Maximum number of iterations 
+for i=1:maxiter 
+    n=size(A); 
+    B=A-alph*eye(n); 
+    v=B\v0; 
+    v0=v/norm(v); 
+    lam= (v0')*A*v0; 
+end 
+   end
+\end{lstlisting} 
+ (a) The QR algorithm above was implemented for a random 500x500 matrix, $A$ such that $A = V^{T}\Lambda V $ for some random 500 x500 matrix $V$ and random 500x500 diagonal matrix $\Lambda$. The distribution obtained for the obtained eigenvalues is attached.  The plot suggests a relatively uniform distribution. 
+ \newline 
+
+ (b) The Rayleigh Iteration algorithm was implemented from above. The 500 random eigenvectors were generated from the columns of $Q$ in $A=QR$.  The distribution is attached. The histogram suggests that the eigenvalues obtained for various random eigenvectors range between -0.5 and  0.5. This behavior could possibly be explained by the fact that Rayleigh Iteration yields eigenvalues that are bounded by the magnitude of the largest eigenvalue of $A$.  This is observed here clearly, as eigenvalues are bounded between [-0.5 0.5]. \newline 
+ \newline 
+ (c)  Now, one can perform the same with shifted iteration, using a shift of $\mu =1$. This yields a uniform distribution about 1 as depicted in the attached plot. It seems that the shift value is representative of the dominant eigenvalue of the matrix $A$. Hence, one must be judiciouss and careful in choosing a shift for a particular application. 
+ 
+ 
+5.) \newline \newline 
+ One seeks to show that for splitting with $A=M-N$ to solve a linear system using the following iteration, 
+ $$Mx^{(k+1)} = Nx^{(k)} +b $$ 
+ that the spectral radius, $\rho (M^{-1}N) <1$.  This is done as follows, 
+ $$ x^{(k+1)} = M^{-1}Nx^{(k)} +  M^{-1}b $$ 
+ Then, 
+ $$e^{(k+1)}= M^{-1}Ne^{(k)} = (M^{-1}N)...(M^{-1}N)e^{(0)} =  (M^{-1}N)^{k} e^{(0)} = R^{k}e^{(0)}$$  
+ This now sows that as $e^{(k)} $ goes to zero, $k$ goes to infinity if $R^{k}$ goes to 0. Now one observes that $||R|| <1$ . It can now be shown that the same condition is true for the spectral radius of $R$. Here, let 
+ $$ e^{(0)} = \sum_{i=1}^{n} \beta_{i} v_{i}$$ 
+ for coefficients $\beta_{i}$ and eigenvectors of $R$, $v_{i}$. Now applying $R^{k}$ to this, 
+ $$ R^{k}e^{(0)}  =  \sum_{i=1}^{n} \beta_{i} v_{i} $$ 
+ It is clear that the above expression approaches zero as well. Hence, one must not only put the contraint on $||R||$ but also on the spectral radius of $R$. Hence, it is enforced that $\rho (R) <1$. 
+  
+ \end{document} 
